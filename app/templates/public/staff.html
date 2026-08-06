@@ -1,0 +1,30 @@
+{% extends "public/base.html" %}
+{% block title %}Teachers / Staff – {{ settings.school_name }}{% endblock %}
+{% block content %}
+<div class="page-banner">
+  <h1>Our Teachers / Staff</h1>
+  <p>Experienced teaching team</p>
+</div>
+<section class="section">
+  <div class="container">
+    <div class="staff-grid">
+      {% for m in members %}
+      <div class="staff-card">
+        {% if m.photo_path %}
+        <img src="{{ media_url(m.photo_path) }}" alt="{{ m.name }}">
+        {% else %}
+        <div class="img-placeholder" style="aspect-ratio:1;"><i class="fa fa-user"></i></div>
+        {% endif %}
+        <div class="body">
+          <h3>{{ m.name }}</h3>
+          <p>{{ m.designation }}</p>
+          {% if m.department %}<p style="font-size:0.8rem;">{{ m.department }}</p>{% endif %}
+        </div>
+      </div>
+      {% else %}
+      <p style="color:#6b7280;">Staff list will appear here. Add from admin panel.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

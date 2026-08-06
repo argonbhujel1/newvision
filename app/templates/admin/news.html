@@ -1,0 +1,34 @@
+{% extends "admin/base.html" %}
+{% block title %}News{% endblock %}
+{% block page_title %}News{% endblock %}
+{% block content %}
+<div class="admin-card">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+    <h2 style="margin:0;">News</h2>
+    <a href="{{ url_for('admin.news_form') }}" class="btn btn-primary btn-sm"><i class="fa fa-plus"></i> Add News</a>
+  </div>
+  <div class="table-wrap">
+    <table class="admin-table">
+      <thead><tr><th>Title</th><th>Category</th><th>Date</th><th>Active</th><th>Actions</th></tr></thead>
+      <tbody>
+        {% for item in items %}
+        <tr>
+          <td>{{ item.title }}</td>
+          <td>{{ item.category }}</td>
+          <td>{{ item.published_at.strftime('%Y-%m-%d') if item.published_at else '' }}</td>
+          <td>{{ 'Yes' if item.is_active else 'No' }}</td>
+          <td>
+            <a href="{{ url_for('admin.news_form', item_id=item.id) }}" class="btn btn-secondary btn-sm">Edit</a>
+            <form method="post" action="{{ url_for('admin.news_delete', item_id=item.id) }}" style="display:inline;" onsubmit="return confirm('Delete?');">
+              <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5">No news.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

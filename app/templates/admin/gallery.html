@@ -1,0 +1,34 @@
+{% extends "admin/base.html" %}
+{% block title %}Gallery{% endblock %}
+{% block page_title %}Gallery{% endblock %}
+{% block content %}
+<div class="admin-card">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+    <h2 style="margin:0;">Gallery</h2>
+    <a href="{{ url_for('admin.gallery_form') }}" class="btn btn-primary btn-sm"><i class="fa fa-plus"></i> Add Image</a>
+  </div>
+  <div class="table-wrap">
+    <table class="admin-table">
+      <thead><tr><th>Preview</th><th>Title</th><th>Album</th><th>Active</th><th>Actions</th></tr></thead>
+      <tbody>
+        {% for item in items %}
+        <tr>
+          <td>{% if item.image_path %}<img src="{{ media_url(item.image_path) }}" style="height:48px;border-radius:6px;">{% endif %}</td>
+          <td>{{ item.title or '—' }}</td>
+          <td>{{ item.album }}</td>
+          <td>{{ 'Yes' if item.is_active else 'No' }}</td>
+          <td>
+            <a href="{{ url_for('admin.gallery_form', item_id=item.id) }}" class="btn btn-secondary btn-sm">Edit</a>
+            <form method="post" action="{{ url_for('admin.gallery_delete', item_id=item.id) }}" style="display:inline;" onsubmit="return confirm('Delete?');">
+              <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5">No images.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

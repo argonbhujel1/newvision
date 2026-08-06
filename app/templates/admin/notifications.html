@@ -1,0 +1,112 @@
+{% extends "admin/base.html" %}
+{% block title %}Notifications{% endblock %}
+{% block page_title %}Push Notifications{% endblock %}
+{% block content %}
+
+<div class="admin-card">
+  <p style="color:#6b7280;font-size:0.9rem;margin:0 0 1rem;line-height:1.55;">
+    Total subscribers: <strong style="color:var(--navy);">{{ subs }}</strong>
+    · Real Web Push (HTTPS): <strong style="color:var(--navy);">{{ real_subs }}</strong>
+    <br>
+    Users must open the public site on their phone and tap <strong>Subscribe</strong>.
+    On <strong>Render (HTTPS)</strong>, notifications reach the phone even when the website is closed.
+    Local HTTP only works while the site tab is open (polling).
+    <br><br>
+    <strong style="color:#b91c1c;">If send shows 0:</strong> remove old subscribers below, then open the public site on the phone → Allow notifications → tap <strong>Subscribe</strong> again (so real push keys are saved).
+  </p>
+  <form method="post">
+    <div class="form-group"><label>Title</label><input type="text" name="title" class="form-control" value="New Vision Academy" required></div>
+    <div class="form-group"><label>Message</label><textarea name="body" class="form-control" rows="3" required placeholder="e.g. SEE results published – check notice board"></textarea></div>
+    <div class="form-group"><label>Open URL (optional)</label><input type="text" name="url" class="form-control" value="/notices" placeholder="/notices"></div>
+    <button type="submit" class="btn btn-cta"><i class="fa fa-bell"></i> Send to all phones</button>
+  </form>
+</div>
+
+<div class="admin-card">
+  <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:0.75rem;margin-bottom:1rem;">
+    <h2 style="margin:0;">Sent notifications</h2>
+    {% if logs %}
+    <form method="post" action="{{ url_for('admin.notifications_clear') }}" onsubmit="return confirm('Clear all notification history?');">
+      <button type="submit" class="btn btn-sm btn-danger">Clear all</button>
+    </form>
+    {% endif %}
+  </div>
+  <div class="table-wrap">
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Body</th>
+          <th>Devices</th>
+          <th>When</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for log in logs %}
+        <tr>
+          <td>{{ log.title }}</td>
+          <td>{{ (log.body or '')[:80] }}{% if log.body and log.body|length > 80 %}…{% endif %}</td>
+          <td>{{ log.sent_count }}</td>
+          <td>{{ log.created_at.strftime('%Y-%m-%d %H:%M') if log.created_at else '' }}</td>
+          <td>
+            <form method="post" action="{{ url_for('admin.notification_delete', item_id=log.id) }}" style="display:inline;" onsubmit="return confirm('Delete this notification log?');">
+              <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5">No notifications sent yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="admin-card">
+  <h2>Subscribers</h2>
+  <div class="table-wrap">
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Keys</th>
+          <th>Endpoint / ID</th>
+          <th>When</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for s in subscribers %}
+        <tr>
+          <td>
+            {% if s.endpoint and s.endpoint.startswith('https://') %}
+            <span style="color:#059669;font-weight:700;">Web Push</span>
+            {% else %}
+            <span style="color:#9ca3af;">Polling only</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if s.p256dh and s.auth %}
+            <span style="color:#059669;font-weight:600;">OK</span>
+            {% else %}
+            <span style="color:#b91c1c;font-weight:600;" title="Missing p256dh/auth – user must Subscribe again">Missing</span>
+            {% endif %}
+          </td>
+          <td style="max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:0.8rem;">{{ (s.endpoint or '')[:80] }}</td>
+          <td>{{ s.created_at.strftime('%Y-%m-%d %H:%M') if s.created_at else '' }}</td>
+          <td>
+            <form method="post" action="{{ url_for('admin.subscriber_delete', item_id=s.id) }}" style="display:inline;" onsubmit="return confirm('Remove this subscriber?');">
+              <button type="submit" class="btn btn-sm btn-danger">Remove</button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5">No subscribers yet. Ask visitors to tap Subscribe on the website.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %}

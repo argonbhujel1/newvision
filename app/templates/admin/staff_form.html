@@ -1,0 +1,21 @@
+{% extends "admin/base.html" %}
+{% block title %}{{ 'Edit' if item else 'Add' }} Staff{% endblock %}
+{% block page_title %}{{ 'Edit' if item else 'Add' }} Staff{% endblock %}
+{% block content %}
+<div class="admin-card">
+  <form method="post" enctype="multipart/form-data">
+    <div class="form-group"><label>Name *</label><input type="text" name="name" class="form-control" value="{{ item.name if item else '' }}" required></div>
+    <div class="form-group"><label>Designation</label><input type="text" name="designation" class="form-control" value="{{ item.designation if item else '' }}"></div>
+    <div class="form-group"><label>Department</label><input type="text" name="department" class="form-control" value="{{ item.department if item else '' }}"></div>
+    <div class="form-group"><label>Bio</label><textarea name="bio" class="form-control" rows="3">{{ item.bio if item else '' }}</textarea></div>
+    <div class="form-group"><label>Sort Order</label><input type="number" name="sort_order" class="form-control" value="{{ item.sort_order if item else 0 }}"></div>
+    <div class="form-group"><label>Photo</label>
+      {% if item and item.photo_path %}<p><img src="{{ media_url(item.photo_path) }}" style="height:80px;border-radius:8px;"></p>{% endif %}
+      <input type="file" name="photo" accept="image/*,.heic,.heif,image/heic,image/heif" class="form-control">
+    </div>
+    <div class="check-row"><input type="checkbox" name="is_active" id="act" {% if not item or item.is_active %}checked{% endif %}><label for="act">Active</label></div>
+    <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Save</button>
+    <a href="{{ url_for('admin.staff') }}" class="btn btn-secondary">Cancel</a>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "admin/base.html" %}
+{% block title %}Hero Slides{% endblock %}
+{% block page_title %}Hero Slides{% endblock %}
+{% block content %}
+<div class="admin-card">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+    <h2 style="margin:0;">Hero Slides</h2>
+    <a href="{{ url_for('admin.slide_form') }}" class="btn btn-primary btn-sm"><i class="fa fa-plus"></i> Add Slide</a>
+  </div>
+  <div class="table-wrap">
+    <table class="admin-table">
+      <thead><tr><th>Order</th><th>Title</th><th>Active</th><th>Actions</th></tr></thead>
+      <tbody>
+        {% for item in items %}
+        <tr>
+          <td>{{ item.sort_order }}</td>
+          <td>{{ item.title }}</td>
+          <td>{{ 'Yes' if item.is_active else 'No' }}</td>
+          <td>
+            <a href="{{ url_for('admin.slide_form', item_id=item.id) }}" class="btn btn-secondary btn-sm">Edit</a>
+            <form method="post" action="{{ url_for('admin.slide_delete', item_id=item.id) }}" style="display:inline;" onsubmit="return confirm('Delete?');">
+              <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="4">No slides. Add one.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

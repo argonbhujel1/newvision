@@ -1,0 +1,75 @@
+{% extends "public/base.html" %}
+{% block title %}About – {{ settings.school_name }}{% endblock %}
+{% block content %}
+<div class="page-banner">
+  <h1>About Us</h1>
+  <p>School history, profile and facilities</p>
+</div>
+<section class="section">
+  <div class="container" style="max-width:52rem;">
+    <div class="card" style="padding:2rem;">
+      <div class="section-head">
+        <p class="label">School Profile</p>
+        <h2>{{ settings.school_name }}</h2>
+        <div class="gold-line"></div>
+      </div>
+      <div class="prose">
+        {{ settings.about_text or 'New Vision Academy is a private English medium school located in Urlabari-8, Morang, Koshi Province, Nepal.' }}
+      </div>
+      <div style="margin-top:1.5rem;display:grid;gap:0.75rem;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));">
+        <div style="background:var(--sand);border-radius:0.65rem;padding:1rem;">
+          <p style="margin:0;font-size:0.75rem;color:#6b7280;">Type</p>
+          <p style="margin:0.25rem 0 0;font-weight:700;color:var(--navy);font-size:0.9rem;">{{ settings.school_type }}</p>
+        </div>
+        <div style="background:var(--mist);border-radius:0.65rem;padding:1rem;">
+          <p style="margin:0;font-size:0.75rem;color:#6b7280;">Level</p>
+          <p style="margin:0.25rem 0 0;font-weight:700;color:var(--navy);font-size:0.9rem;">{{ settings.grades_offered }}</p>
+        </div>
+        <div style="background:var(--sand);border-radius:0.65rem;padding:1rem;">
+          <p style="margin:0;font-size:0.75rem;color:#6b7280;">Students</p>
+          <p style="margin:0.25rem 0 0;font-weight:700;color:var(--navy);font-size:0.9rem;">{{ settings.student_count }}</p>
+        </div>
+        <div style="background:var(--mist);border-radius:0.65rem;padding:1rem;">
+          <p style="margin:0;font-size:0.75rem;color:#6b7280;">Hours</p>
+          <p style="margin:0.25rem 0 0;font-weight:700;color:var(--navy);font-size:0.85rem;">{{ settings.school_hours }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="padding:2rem;margin-top:1.5rem;">
+      <div class="section-head">
+        <p class="label">Facilities</p>
+        <h2>What We Provide</h2>
+        <div class="gold-line"></div>
+      </div>
+      <div class="facility-list">
+        {% for f in facilities %}
+        <span class="facility-chip"><i class="fa fa-check" style="color:var(--gold);margin-right:0.35rem;font-size:0.7rem;"></i>{{ f.title }}</span>
+        {% else %}
+        <span class="facility-chip">English-medium education</span>
+        <span class="facility-chip">Smart classrooms</span>
+        <span class="facility-chip">Computer laboratory</span>
+        <span class="facility-chip">Science laboratory</span>
+        <span class="facility-chip">Library</span>
+        <span class="facility-chip">Sports & ECA</span>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="card" style="padding:2rem;margin-top:1.5rem;">
+      <div class="section-head">
+        <p class="label">Location</p>
+        <h2>Find Us</h2>
+        <div class="gold-line"></div>
+      </div>
+      <p class="prose">{{ settings.google_maps_address or settings.address }}</p>
+      <p style="font-size:0.9rem;color:#6b7280;">District: {{ settings.district }} · Municipality: {{ settings.municipality }} · Ward: {{ settings.ward }} · Province: {{ settings.province }}</p>
+      {% if settings.latitude %}
+      <a href="https://www.google.com/maps/search/?api=1&query={{ settings.latitude }},{{ settings.longitude }}" target="_blank" rel="noopener" class="btn btn-primary" style="margin-top:1rem;">
+        <i class="fa fa-map-location-dot"></i> Open in Google Maps
+      </a>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endblock %}

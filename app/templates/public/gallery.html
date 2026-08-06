@@ -1,0 +1,31 @@
+{% extends "public/base.html" %}
+{% block title %}Gallery – {{ settings.school_name }}{% endblock %}
+{% block content %}
+<div class="page-banner">
+  <h1>Gallery</h1>
+  <p>Learning glimpses from school life</p>
+</div>
+<section class="section">
+  <div class="container">
+    {% if albums %}
+    <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:1.5rem;">
+      <a href="{{ url_for('public.gallery') }}" class="btn {% if not album_filter %}btn-primary{% else %}btn-outline{% endif %}" style="font-size:0.8rem;">All</a>
+      {% for a in albums %}
+      <a href="{{ url_for('public.gallery', album=a) }}" class="btn {% if album_filter == a %}btn-primary{% else %}btn-outline{% endif %}" style="font-size:0.8rem;">{{ a }}</a>
+      {% endfor %}
+    </div>
+    {% endif %}
+    {% if images %}
+    <div class="gallery-grid" style="grid-template-columns:repeat(auto-fill,minmax(180px,1fr));">
+      {% for g in images %}
+      <a href="{{ media_url(g.image_path) }}" target="_blank" title="{{ g.title }}">
+        <img src="{{ media_url(g.image_path) }}" alt="{{ g.title or 'Gallery' }}" loading="lazy">
+      </a>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p style="color:#6b7280;text-align:center;">No gallery images yet. Upload from the admin panel.</p>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,79 @@
+{% extends "public/base.html" %}
+{% block title %}Admission – {{ settings.school_name }}{% endblock %}
+{% block content %}
+<div class="page-banner">
+  <h1>Admission Open</h1>
+  <p>Session {{ settings.admission_session or '2083' }} · {{ settings.grades_offered }}</p>
+</div>
+<section class="section">
+  <div class="container" style="max-width:40rem;">
+    <div class="card" style="padding:2rem;margin-bottom:1.5rem;">
+      <div class="section-head">
+        <p class="label">Join Us</p>
+        <h2>Why New Vision Academy?</h2>
+        <div class="gold-line"></div>
+      </div>
+      <ul style="list-style:disc;padding-left:1.25rem;font-size:0.95rem;color:#374151;line-height:1.8;">
+        <li>Private English Medium School</li>
+        <li>ECD / Nursery to Grade 10 (SEE)</li>
+        <li>Smart classrooms, computer & science labs, library</li>
+        <li>Sports, ECA and cultural programs</li>
+        <li>Experienced teaching staff & child-friendly environment</li>
+        <li>Location: {{ settings.address or "Urlabari-8, Morang" }}</li>
+      </ul>
+      <p style="margin-top:1rem;font-size:0.9rem;color:#6b7280;">
+        School hours: {{ settings.school_hours }} · Call: 
+        <a href="tel:{{ settings.phone }}" style="color:var(--navy);font-weight:700;">{{ settings.phone }}</a>
+      </p>
+    </div>
+
+    <div class="card" style="padding:2rem;" id="enquiry">
+      <div class="section-head">
+        <p class="label">Enquiry Form</p>
+        <h2>Admission Enquiry</h2>
+        <div class="gold-line"></div>
+      </div>
+      <form method="post">
+        <div class="form-group">
+          <label>Student Name *</label>
+          <input type="text" name="student_name" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label>Parent / Guardian Name</label>
+          <input type="text" name="parent_name" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>Phone *</label>
+          <input type="tel" name="phone" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" name="email" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>Grade Applying For</label>
+          <select name="grade" class="form-control">
+            <option value="">Select grade</option>
+            <option>ECD / Nursery</option>
+            <option>Grade 1</option>
+            <option>Grade 2</option>
+            <option>Grade 3</option>
+            <option>Grade 4</option>
+            <option>Grade 5</option>
+            <option>Grade 6</option>
+            <option>Grade 7</option>
+            <option>Grade 8</option>
+            <option>Grade 9</option>
+            <option>Grade 10</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Message</label>
+          <textarea name="message" class="form-control" rows="4"></textarea>
+        </div>
+        <button type="submit" class="btn btn-cta"><i class="fa fa-paper-plane"></i> Submit Enquiry</button>
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock %}

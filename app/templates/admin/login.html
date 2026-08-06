@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin Login – New Vision Academy</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="login-page">
+    <div class="login-box">
+      <h1><i class="fa fa-graduation-cap" style="color:var(--gold);"></i> NVA Admin</h1>
+      <p class="sub">New Vision Academy – Login</p>
+      {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+      {% for cat, msg in messages %}
+      <div class="flash flash-{{ cat }}">{{ msg }}</div>
+      {% endfor %}
+      {% endif %}
+      {% endwith %}
+      <form method="post">
+        <div class="form-group">
+          <label>Username</label>
+          <input type="text" name="username" class="form-control" required autofocus>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" name="password" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;">Login</button>
+      </form>
+      <p style="margin-top:1rem;font-size:0.8rem;color:#9ca3af;text-align:center;">Default: admin / admin123</p>
+    </div>
+  </div>
+</body>
+</html>

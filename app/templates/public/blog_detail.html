@@ -1,0 +1,19 @@
+{% extends "public/base.html" %}
+{% block title %}{{ item.title }} – {{ settings.school_name }}{% endblock %}
+{% block content %}
+<div class="page-banner">
+  <h1>{{ item.title }}</h1>
+  <p>{{ item.category }} · {{ item.published_at.strftime('%B %d, %Y') if item.published_at else '' }}</p>
+</div>
+<section class="section">
+  <div class="container" style="max-width:48rem;">
+    <div class="card" style="padding:2rem;">
+      {% if item.image_path %}
+      <img src="{{ media_url(item.image_path) }}" alt="{{ item.title }}" style="width:100%;border-radius:0.75rem;margin-bottom:1.25rem;max-height:360px;object-fit:cover;">
+      {% endif %}
+      <div class="prose" style="white-space:pre-line;">{{ item.content }}</div>
+      <a href="{{ url_for('public.blog_list') }}" class="btn btn-outline" style="margin-top:1.5rem;"><i class="fa fa-arrow-left"></i> All Blog Posts</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

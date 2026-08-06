@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ settings.school_name if settings else 'New Vision Academy' }}{% endblock %}</title>
+  <meta name="description" content="{{ settings.meta_description if settings else '' }}">
+  <meta name="theme-color" content="#02143a">
+  <meta name="vapid-public-key" content="{{ vapid_public_key if vapid_public_key is defined else '' }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=7">
+  {% block head %}{% endblock %}
+</head>
+<body>
+  <!-- Page loading screen -->
+  <div class="page-loader" id="pageLoader">
+    <div class="loader-spinner"></div>
+    <p>{{ settings.school_name if settings else 'New Vision Academy' }}</p>
+    <span class="sub">Loading…</span>
+  </div>
+
+  <!-- Top bar -->
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div style="display:flex;flex-wrap:wrap;align-items:center;gap:1rem;">
+        {% if settings and settings.phone %}
+        <a href="tel:{{ settings.phone }}"><i class="fa fa-phone"></i>{{ settings.phone }}</a>
+        {% endif %}
+        {% if settings and settings.phone2 %}
+        <a href="tel:{{ settings.phone2 }}" class="hide-sm"><i class="fa fa-phone"></i>{{ settings.phone2 }}</a>
+        {% endif %}
+        {% if settings and settings.email %}
+        <a href="mailto:{{ settings.email }}" class="topbar-email"><i class="fa fa-envelope"></i><span>{{ settings.email }}</span></a>
+        {% endif %}
+      </div>
+      <div style="display:flex;flex-wrap:wrap;align-items:center;gap:0.5rem;">
+        {% if settings and settings.registration_no %}
+        <span class="badge-pill">Reg: {{ settings.registration_no }}</span>
+        {% endif %}
+        {% if settings and settings.school_type %}
+        <span class="badge-pill hide-sm">{{ settings.school_type }}</span>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="{{ url_for('public.home') }}" class="logo-wrap">
+        {% if settings and settings.logo_path %}
+        <img src="{{ media_url(settings.logo_path) }}" alt="{{ settings.school_name }}" class="site-logo">
+        {% else %}
+        <div class="img-placeholder site-logo-fallback"><i class="fa fa-graduation-cap"></i></div>
+        {% endif %}
+        <div class="logo-text">
+          <h1>{{ settings.school_name if settings else 'New Vision Academy' }}</h1>
+          <p class="logo-addr-full">{{ settings.address if settings else 'Urlabari-8, Morang' }}</p>
+          <p class="logo-addr-short">{% if settings %}{% if settings.municipality %}{{ settings.municipality }}{% if settings.district %}, {{ settings.district }}{% endif %}{% else %}{{ (settings.address or 'Urlabari, Morang')[:28] }}{% endif %}{% else %}Urlabari, Morang{% endif %}</p>
+        </div>
+      </a>
+
+      <nav class="nav-desktop">
+        <a href="{{ url_for('public.home') }}" class="nav-link {% if request.endpoint == 'public.home' %}active{% endif %}">Home</a>
+        <a href="{{ url_for('public.about') }}" class="nav-link {% if request.endpoint in ['public.about','public.principal'] %}active{% endif %}">About Us</a>
+        <a href="{{ url_for('public.staff') }}" class="nav-link {% if request.endpoint == 'public.staff' %}active{% endif %}">Teachers / Staff</a>
+        <a href="{{ url_for('public.gallery') }}" class="nav-link {% if request.endpoint == 'public.gallery' %}active{% endif %}">Gallery</a>
+        <a href="{{ url_for('public.notices') }}" class="nav-link {% if request.endpoint == 'public.notices' %}active{% endif %}">Notice Board</a>
+        <a href="{{ url_for('public.news_list') }}" class="nav-link {% if request.endpoint in ['public.news_list','public.news_detail'] %}active{% endif %}">News</a>
+        <a href="{{ url_for('public.blog_list') }}" class="nav-link {% if request.endpoint in ['public.blog_list','public.blog_detail'] %}active{% endif %}">Blog</a>
+        <a href="{{ url_for('public.contact') }}" class="nav-link {% if request.endpoint == 'public.contact' %}active{% endif %}">Contact</a>
+      </nav>
+
+      <a href="{{ url_for('public.admission') }}" class="btn btn-cta header-cta">
+        <i class="fa fa-graduation-cap" style="font-size:0.75rem;"></i> Admission Open
+      </a>
+
+      <button type="button" class="menu-toggle" id="menuToggle" aria-label="Menu">
+        <i class="fa fa-bars"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Mobile menu -->
+  <div class="mobile-overlay" id="mobileOverlay"></div>
+  <aside class="mobile-drawer" id="mobileDrawer">
+    <div class="drawer-head">
+      <div style="display:flex;align-items:center;gap:0.65rem;">
+        {% if settings and settings.logo_path %}
+        <img src="{{ media_url(settings.logo_path) }}" alt="" style="width:40px;height:40px;border-radius:10px;object-fit:cover;">
+        {% endif %}
+        <div>
+          <p style="margin:0;font-weight:800;color:var(--navy);font-size:0.9rem;">{{ settings.school_name if settings else 'NVA' }}</p>
+          <p style="margin:0;font-size:0.75rem;color:#6b7280;">{{ settings.municipality if settings and settings.municipality else (settings.address if settings else "Urlabari, Morang") }}</p>
+        </div>
+      </div>
+      <button type="button" class="menu-toggle" id="menuClose"><i class="fa fa-xmark"></i></button>
+    </div>
+    <div style="padding:1rem;flex:1;overflow-y:auto;">
+      <a href="{{ url_for('public.admission') }}" class="btn btn-cta" style="width:100%;justify-content:center;margin-bottom:1rem;">
+        <i class="fa fa-graduation-cap"></i> Admission Open
+      </a>
+      <a href="{{ url_for('public.home') }}" class="mobile-link"><i class="fa fa-home" style="color:var(--gold);width:1.2rem;"></i> Home</a>
+      <a href="{{ url_for('public.about') }}" class="mobile-link"><i class="fa fa-info-circle" style="color:var(--gold);width:1.2rem;"></i> About Us</a>
+      <a href="{{ url_for('public.principal') }}" class="mobile-link"><i class="fa fa-user-tie" style="color:var(--gold);width:1.2rem;"></i> Principal Message</a>
+      <a href="{{ url_for('public.staff') }}" class="mobile-link"><i class="fa fa-chalkboard-user" style="color:var(--gold);width:1.2rem;"></i> Teachers / Staff</a>
+      <a href="{{ url_for('public.gallery') }}" class="mobile-link"><i class="fa fa-images" style="color:var(--gold);width:1.2rem;"></i> Gallery</a>
+      <a href="{{ url_for('public.notices') }}" class="mobile-link"><i class="fa fa-bullhorn" style="color:var(--gold);width:1.2rem;"></i> Notice Board</a>
+      <a href="{{ url_for('public.news_list') }}" class="mobile-link"><i class="fa fa-newspaper" style="color:var(--gold);width:1.2rem;"></i> News</a>
+      <a href="{{ url_for('public.blog_list') }}" class="mobile-link"><i class="fa fa-feather" style="color:var(--gold);width:1.2rem;"></i> Blog</a>
+      <a href="{{ url_for('public.contact') }}" class="mobile-link"><i class="fa fa-envelope" style="color:var(--gold);width:1.2rem;"></i> Contact</a>
+    </div>
+  </aside>
+
+  <!-- Ticker -->
+  {% if ticker_notices %}
+  <div class="ticker">
+    <div class="ticker-inner">
+      <span class="ticker-label">Latest Notices</span>
+      <div class="ticker-track">
+        <div class="ticker-content">
+          {% for n in ticker_notices %}
+          <a href="{{ url_for('public.notice_detail', notice_id=n.id) }}">
+            {% if n.is_important %}<i class="fa fa-circle-exclamation" style="margin-right:0.3rem;"></i>{% endif %}
+            {{ n.title }}
+          </a>
+          {% endfor %}
+          {% for n in ticker_notices %}
+          <a href="{{ url_for('public.notice_detail', notice_id=n.id) }}">
+            {% if n.is_important %}<i class="fa fa-circle-exclamation" style="margin-right:0.3rem;"></i>{% endif %}
+            {{ n.title }}
+          </a>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  <div class="flash-wrap">
+    {% for cat, msg in messages %}
+    <div class="flash flash-{{ cat }}">{{ msg }}</div>
+    {% endfor %}
+  </div>
+  {% endif %}
+  {% endwith %}
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Subscribe CTA strip -->
+  <div class="subscribe-strip" id="subscribeStrip">
+    <p><i class="fa fa-bell" style="color:var(--gold-light);"></i>
+      <strong>Subscribe to get notified</strong> — notices, results &amp; admission updates on your phone.
+    </p>
+    <button type="button" class="btn btn-cta" id="btnSubscribeStrip" style="font-size:0.85rem;">
+      <i class="fa fa-bell"></i> Subscribe now
+    </button>
+  </div>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-grid">
+      <div>
+        <p class="label">School Profile</p>
+        <h3 style="margin-top:0.4rem;">{{ settings.school_name if settings else 'New Vision Academy' }}</h3>
+        <p style="margin:0.5rem 0 0;font-size:0.875rem;max-width:20rem;">
+          {{ settings.school_type if settings else 'Private English Medium School' }} ·
+          {{ settings.grades_offered if settings else 'ECD to Grade 10' }}
+        </p>
+        <p style="margin:0.75rem 0 0;font-size:0.875rem;display:flex;gap:0.4rem;">
+          <i class="fa fa-location-dot" style="color:var(--gold);margin-top:0.2rem;"></i>
+          <span>{{ settings.address if settings else 'Urlabari-8, Morang, Koshi Province, Nepal' }}</span>
+        </p>
+        {% if settings and settings.facebook_url %}
+        <div style="margin-top:0.85rem;">
+          <a href="{{ settings.facebook_url }}" target="_blank" rel="noopener" class="btn btn-ghost" style="font-size:0.75rem;">
+            <i class="fab fa-facebook-f"></i> Facebook
+          </a>
+        </div>
+        {% endif %}
+      </div>
+      <div>
+        <p class="label">Quick Links</p>
+        <ul style="margin-top:0.85rem;display:grid;gap:0.5rem;font-size:0.875rem;">
+          <li><a href="{{ url_for('public.about') }}">About / History</a></li>
+          <li><a href="{{ url_for('public.admission') }}">Admission</a></li>
+          <li><a href="{{ url_for('public.gallery') }}">Gallery</a></li>
+          <li><a href="{{ url_for('public.notices') }}">Notice Board</a></li>
+          <li><a href="{{ url_for('public.news_list') }}">News</a></li>
+          <li><a href="{{ url_for('public.blog_list') }}">Blog</a></li>
+          <li><a href="{{ url_for('public.staff') }}">Teachers / Staff</a></li>
+          <li><a href="{{ url_for('public.contact') }}">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="label">Direct Contact</p>
+        <ul style="margin-top:0.85rem;display:grid;gap:0.5rem;font-size:0.875rem;">
+          {% if settings and settings.phone %}
+          <li><a href="tel:{{ settings.phone }}"><i class="fa fa-phone" style="color:var(--gold);margin-right:0.4rem;"></i>{{ settings.phone }}</a></li>
+          {% endif %}
+          {% if settings and settings.email %}
+          <li><a href="mailto:{{ settings.email }}"><i class="fa fa-envelope" style="color:var(--gold);margin-right:0.4rem;"></i>{{ settings.email }}</a></li>
+          {% endif %}
+          {% if settings and settings.school_hours %}
+          <li style="display:flex;gap:0.4rem;"><i class="fa fa-clock" style="color:var(--gold);margin-top:0.15rem;"></i><span>{{ settings.school_hours }}</span></li>
+          {% endif %}
+        </ul>
+      </div>
+      <div class="card-navy" style="padding:1.25rem;">
+        <p class="label">Admission Support</p>
+        <h3 style="margin-top:0.4rem;font-size:1.25rem;">Visit School</h3>
+        <p style="margin:0.5rem 0 0;font-size:0.85rem;color:rgba(255,255,255,0.65);">
+          Admission Open. Call {{ settings.phone if settings else '' }}
+        </p>
+        <div style="margin-top:1rem;display:grid;gap:0.5rem;">
+          <a href="{{ url_for('public.admission') }}#enquiry" class="btn btn-cta" style="justify-content:center;font-size:0.8rem;">
+            <i class="fa fa-pen-to-square"></i> Apply Now
+          </a>
+          <a href="{{ url_for('public.contact') }}" class="btn btn-ghost" style="justify-content:center;font-size:0.8rem;">
+            <i class="fa fa-comments"></i> Contact Us
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      &copy; {{ settings.established if settings and settings.established else 2026 }}–{{ 2026 }} {{ settings.school_name if settings else 'New Vision Academy' }}. All rights reserved.
+    </div>
+  </footer>
+
+  <!-- Floating WhatsApp + Phone (fixed, always visible) -->
+  {% set phone_raw = (settings.phone if settings and settings.phone else '+977 98413 33476') %}
+  {% set wa = (settings.whatsapp if settings and settings.whatsapp else '9779841333476') %}
+  <div class="fab-wrap" aria-label="Quick contact">
+    <button type="button" class="fab-btn fab-notify" id="btnSubscribeNotify" title="Subscribe for notifications">
+      <i class="fa fa-bell" id="notifyFabIcon"></i>
+      <span id="notifyFabLabel">Subscribe</span>
+    </button>
+    <a class="fab-btn fab-whatsapp" href="https://wa.me/{{ wa }}?text=Hello%20New%20Vision%20Academy" target="_blank" rel="noopener" title="WhatsApp">
+      <i class="fab fa-whatsapp"></i>
+      <span>WhatsApp</span>
+    </a>
+    <a class="fab-btn fab-phone" href="tel:{{ phone_raw }}" title="Call school">
+      <i class="fa fa-phone"></i>
+      <span>Call Now</span>
+    </a>
+  </div>
+
+  <!-- Cookie consent -->
+  <div class="cookie-banner" id="cookieBanner" role="dialog" aria-label="Cookie consent">
+    <div class="cookie-inner">
+      <p>
+        <strong>Cookies &amp; privacy.</strong>
+        We use cookies for basic site function, preferences and (if you allow) to send school notices to your device.
+        By continuing you agree to our use of cookies.
+      </p>
+      <div class="cookie-actions">
+        <button type="button" class="btn btn-cta" id="cookieAccept" style="font-size:0.8rem;">Accept</button>
+        <button type="button" class="btn btn-ghost" id="cookieDecline" style="font-size:0.8rem;">Decline</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Subscribe to get notified modal -->
+  <div class="notif-prompt" id="notifPrompt">
+    <button type="button" class="notif-close" id="notifNo" aria-label="Close">&times;</button>
+    <h4><i class="fa fa-bell" style="color:var(--gold);"></i> Subscribe to get notified</h4>
+    <p>Get instant alerts on your phone when the school posts <strong>notices</strong>, <strong>results</strong> or <strong>admission updates</strong>.</p>
+    <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+      <button type="button" class="btn btn-cta" id="notifYes" style="font-size:0.85rem;">
+        <i class="fa fa-bell"></i> Subscribe now
+      </button>
+      <button type="button" class="btn btn-outline" id="notifLater" style="font-size:0.85rem;">Later</button>
+    </div>
+    <div id="notifStatus" style="margin:0.75rem 0 0;font-size:0.8rem;line-height:1.45;display:none;"></div>
+  </div>
+
+  <script>
+    const toggle = document.getElementById('menuToggle');
+    const closeBtn = document.getElementById('menuClose');
+    const drawer = document.getElementById('mobileDrawer');
+    const overlay = document.getElementById('mobileOverlay');
+    function openMenu() { drawer.classList.add('open'); overlay.classList.add('open'); }
+    function closeMenu() { drawer.classList.remove('open'); overlay.classList.remove('open'); }
+    if (toggle) toggle.addEventListener('click', openMenu);
+    if (closeBtn) closeBtn.addEventListener('click', closeMenu);
+    if (overlay) overlay.addEventListener('click', closeMenu);
+  </script>
+  <script src="{{ url_for('static', filename='js/main.js') }}?v=7"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

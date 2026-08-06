@@ -1,0 +1,26 @@
+{% extends "public/base.html" %}
+{% block title %}Notice Board – {{ settings.school_name }}{% endblock %}
+{% block content %}
+<div class="page-banner">
+  <h1>Notice Board</h1>
+  <p>Latest school notices and announcements</p>
+</div>
+<section class="section">
+  <div class="container" style="max-width:48rem;">
+    <div style="display:grid;gap:0.75rem;">
+      {% for n in notices %}
+      <a href="{{ url_for('public.notice_detail', notice_id=n.id) }}" class="notice-item" style="background:#fff;">
+        <div class="meta">
+          {% if n.is_important %}<span class="badge-imp">Important</span>{% endif %}
+          <span>{{ n.published_at.strftime('%b %d, %Y') if n.published_at else '' }}</span>
+        </div>
+        <h3>{{ n.title }}</h3>
+        <p>{{ (n.content or '')[:160] }}{% if n.content and n.content|length > 160 %}...{% endif %}</p>
+      </a>
+      {% else %}
+      <p style="color:#6b7280;">No notices published yet.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

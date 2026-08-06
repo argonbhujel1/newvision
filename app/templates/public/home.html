@@ -1,0 +1,469 @@
+{% extends "public/base.html" %}
+{% block title %}{{ settings.school_name }} – Home{% endblock %}
+
+{% block content %}
+<!-- Hero Slider -->
+<section class="hero" id="hero">
+  {% if slides %}
+  {% for s in slides %}
+  <div class="hero-slide {% if loop.first %}active{% endif %}" data-index="{{ loop.index0 }}">
+    {% if s.image_path %}
+    <img src="{{ media_url(s.image_path) }}" alt="{{ s.title }}">
+    {% else %}
+    <div class="img-placeholder" style="position:absolute;inset:0;"></div>
+    {% endif %}
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      {% if s.badge_text %}
+      <span class="hero-badge"><i class="fa fa-sparkles" style="font-size:0.65rem;"></i> {{ s.badge_text }}</span>
+      {% endif %}
+      <span style="display:inline-flex;margin-top:0.5rem;border:1px solid rgba(255,255,255,0.12);background:rgba(2,15,46,0.45);border-radius:999px;padding:0.35rem 0.75rem;font-size:0.7rem;font-weight:700;letter-spacing:0.15em;color:rgba(255,255,255,0.8);">
+        {{ '%02d'|format(loop.index) }} / {{ '%02d'|format(slides|length) }}
+      </span>
+      <h1>{{ s.title }}</h1>
+      {% if s.subtitle %}<p>{{ s.subtitle }}</p>{% endif %}
+      <div class="hero-actions">
+        {% if s.button1_text %}
+        <a href="{{ s.button1_url or '#' }}" class="btn btn-cta"><i class="fa fa-arrow-right" style="font-size:0.7rem;"></i> {{ s.button1_text }}</a>
+        {% endif %}
+        {% if s.button2_text %}
+        <a href="{{ s.button2_url or '#' }}" class="btn btn-ghost"><i class="fa fa-circle-info" style="font-size:0.7rem;"></i> {{ s.button2_text }}</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+  <div class="hero-nav">
+    <div style="display:flex;gap:0.4rem;">
+      {% for s in slides %}
+      <button type="button" class="hero-dot {% if loop.first %}active{% endif %}" data-go="{{ loop.index0 }}" aria-label="Slide {{ loop.index }}"></button>
+      {% endfor %}
+    </div>
+    <div style="display:flex;gap:0.4rem;">
+      <button type="button" class="hero-arrow" id="heroPrev" aria-label="Previous"><i class="fa fa-arrow-left" style="font-size:0.85rem;"></i></button>
+      <button type="button" class="hero-arrow" id="heroNext" aria-label="Next"><i class="fa fa-arrow-right" style="font-size:0.85rem;"></i></button>
+    </div>
+  </div>
+  {% else %}
+  <div class="hero-slide active">
+    <div class="img-placeholder" style="position:absolute;inset:0;"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <span class="hero-badge">ADMISSION OPEN</span>
+      <h1>Education Is The Light Of Life</h1>
+      <p>A disciplined, child-friendly learning space in Urlabari-8, Morang for ECD to Grade 10.</p>
+      <div class="hero-actions">
+        <a href="{{ url_for('public.admission') }}" class="btn btn-cta">Admission Open</a>
+        <a href="{{ url_for('public.contact') }}" class="btn btn-ghost">Contact School</a>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+</section>
+
+<!-- Stats -->
+<section class="stats-strip">
+  <div class="stats-grid">
+    <div class="stat-item">
+      <div class="stat-icon"><i class="fa fa-school"></i></div>
+      <div>
+        <p class="label-sm">School Type</p>
+        <p class="val">{{ settings.school_type or 'Private English Medium' }}</p>
+      </div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-icon"><i class="fa fa-book-open-reader"></i></div>
+      <div>
+        <p class="label-sm">Grades Offered</p>
+        <p class="val">{{ settings.grades_offered or 'ECD – Grade 10' }}</p>
+      </div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-icon"><i class="fa fa-calendar-days"></i></div>
+      <div>
+        <p class="label-sm">Admission Session</p>
+        <p class="val">{{ settings.admission_session or '2083' }}</p>
+      </div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-icon"><i class="fa fa-users"></i></div>
+      <div>
+        <p class="label-sm">Students</p>
+        <p class="val">{{ settings.student_count or '~228' }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Principal + Commitments -->
+<section class="section">
+  <div class="container">
+    <div class="grid-2 principal">
+      <article class="card">
+        <div style="display:grid;grid-template-columns:1fr;{% if settings and settings.principal_photo %}{% endif %}">
+          <div style="display:grid;{% if settings and settings.principal_photo %}grid-template-columns:0.85fr 1.15fr;{% endif %}">
+            {% if settings and settings.principal_photo %}
+            <div style="position:relative;min-height:16rem;background:var(--navy);">
+              <img src="{{ media_url(settings.principal_photo) }}" alt="{{ settings.principal_name }}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;">
+              <div style="position:absolute;inset-x:0;bottom:0;background:linear-gradient(to top,rgba(3,21,64,0.9),transparent);padding:1.25rem;color:#fff;">
+                <p class="label" style="color:var(--gold-light);">From the Desk of the Principal</p>
+                <h2 style="margin:0.4rem 0 0;font-family:var(--font-display);font-size:1.5rem;font-weight:600;">{{ settings.principal_name }}</h2>
+                <p style="margin:0.2rem 0 0;font-size:0.85rem;color:rgba(255,255,255,0.7);">{{ settings.principal_title }}</p>
+              </div>
+            </div>
+            {% endif %}
+            <div style="padding:1.75rem;">
+              <div class="section-head" style="margin-bottom:1rem;">
+                <p class="label">Trusted Learning Journey</p>
+                <h2>Message from Principal</h2>
+                <div class="gold-line"></div>
+              </div>
+              <p class="prose" style="font-size:0.9rem;">
+                {{ (settings.principal_message or '')[:280] }}{% if settings and settings.principal_message and settings.principal_message|length > 280 %}...{% endif %}
+              </p>
+              <div style="margin-top:1.25rem;display:flex;flex-wrap:wrap;gap:0.5rem;">
+                <a href="{{ url_for('public.principal') }}" class="btn btn-primary"><i class="fa fa-book-open" style="font-size:0.7rem;"></i> Read More</a>
+                <a href="{{ url_for('public.contact') }}" class="btn btn-outline"><i class="fa fa-comments" style="font-size:0.7rem;"></i> Contact Us</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <aside class="card-navy">
+        <div class="section-head" style="margin-bottom:1.25rem;">
+          <p class="label">Trusted Learning Journey</p>
+          <h2 style="color:#fff;">Our Commitments</h2>
+          <p style="color:rgba(255,255,255,0.65);">A balanced school culture built on care, structure and student progress.</p>
+          <div class="gold-line" style="background:rgba(255,255,255,0.2);"></div>
+        </div>
+        <div style="display:grid;gap:0.65rem;">
+          {% for c in commitments[:4] %}
+          <div class="commit-item">
+            <div class="commit-icon"><i class="fa fa-check"></i></div>
+            <div>
+              <h3>{{ c.title }}</h3>
+              <p>{{ c.content }}</p>
+            </div>
+          </div>
+          {% else %}
+          <div class="commit-item">
+            <div class="commit-icon"><i class="fa fa-user-graduate"></i></div>
+            <div><h3>Experienced Teachers</h3><p>Dedicated teaching team for classroom learning and student progress.</p></div>
+          </div>
+          {% endfor %}
+        </div>
+        <div style="margin-top:1.25rem;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.08);border-radius:1rem;padding:1.15rem;">
+          <p class="label">Admission Support</p>
+          <p style="margin:0.5rem 0 0;font-size:0.9rem;color:rgba(255,255,255,0.75);">{{ settings.grades_offered or 'ECD – Grade 10' }}</p>
+          <div style="margin-top:0.85rem;display:flex;flex-wrap:wrap;gap:0.5rem;">
+            <a href="{{ url_for('public.admission') }}" class="btn btn-cta"><i class="fa fa-pen-to-square" style="font-size:0.7rem;"></i> Apply Now</a>
+            <a href="{{ url_for('public.about') }}" class="btn btn-ghost"><i class="fa fa-arrow-right" style="font-size:0.7rem;"></i> Learn More</a>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- Profile + Offers -->
+<section class="section" style="padding-top:0;">
+  <div class="container">
+    <div class="grid-2 profile">
+      <article class="card" style="padding:1.75rem;">
+        <div class="section-head">
+          <p class="label">School Facts</p>
+          <h2>School Profile</h2>
+          <div class="gold-line"></div>
+        </div>
+        <p class="prose" style="font-size:0.9rem;">
+          {{ (settings.about_text or 'New Vision Academy is a private English medium school in Urlabari-8, Morang.')[:350] }}{% if settings and settings.about_text and settings.about_text|length > 350 %}...{% endif %}
+        </p>
+        <div style="margin-top:1.25rem;display:grid;gap:0.65rem;grid-template-columns:1fr 1fr;">
+          <div style="background:var(--sand);border-radius:0.65rem;padding:0.85rem;">
+            <p style="margin:0;font-size:0.75rem;color:#6b7280;">Location</p>
+            <p style="margin:0.2rem 0 0;font-size:0.85rem;font-weight:700;color:var(--navy);">{{ settings.address or "Urlabari-8, Morang" }}</p>
+          </div>
+          <div style="background:var(--mist);border-radius:0.65rem;padding:0.85rem;">
+            <p style="margin:0;font-size:0.75rem;color:#6b7280;">Province</p>
+            <p style="margin:0.2rem 0 0;font-size:0.85rem;font-weight:700;color:var(--navy);">{{ settings.province or 'Koshi' }}</p>
+          </div>
+        </div>
+        <div style="margin-top:1.25rem;display:flex;flex-wrap:wrap;gap:0.5rem;">
+          <a href="{{ url_for('public.about') }}" class="btn btn-primary"><i class="fa fa-book-open" style="font-size:0.7rem;"></i> Read More</a>
+          <a href="{{ url_for('public.contact') }}" class="btn btn-outline"><i class="fa fa-comments" style="font-size:0.7rem;"></i> Contact Us</a>
+        </div>
+      </article>
+
+      <section style="background:var(--mist);border-radius:1.15rem;padding:1.75rem;">
+        <div class="section-head">
+          <p class="label">Our Learning Space</p>
+          <h2>What We Offer</h2>
+          <p>Why Choose New Vision Academy?</p>
+          <div class="gold-line"></div>
+        </div>
+        <div class="offer-grid">
+          {% for o in offers %}
+          <article class="offer-card">
+            <div class="offer-icon"><i class="fa fa-star"></i></div>
+            <h3>{{ o.title }}</h3>
+            <p>{{ o.content }}</p>
+          </article>
+          {% else %}
+          <article class="offer-card">
+            <div class="offer-icon"><i class="fa fa-laptop"></i></div>
+            <h3>Smart Classrooms</h3>
+            <p>Technology-friendly learning with modern classrooms and labs.</p>
+          </article>
+          {% endfor %}
+        </div>
+      </section>
+    </div>
+  </div>
+</section>
+
+<!-- Facilities -->
+<section class="section" style="padding-top:0;">
+  <div class="container">
+    <div class="card" style="padding:1.75rem;">
+      <div class="section-head">
+        <p class="label">Campus & Learning</p>
+        <h2>Our Facilities</h2>
+        <p>Everything we provide for a complete school experience</p>
+        <div class="gold-line"></div>
+      </div>
+      <div class="facility-list">
+        {% for f in facilities %}
+        <span class="facility-chip"><i class="fa fa-check" style="color:var(--gold);margin-right:0.35rem;font-size:0.7rem;"></i>{{ f.title }}</span>
+        {% else %}
+        <span class="facility-chip"><i class="fa fa-check" style="color:var(--gold);margin-right:0.35rem;font-size:0.7rem;"></i>English-medium education</span>
+        <span class="facility-chip"><i class="fa fa-check" style="color:var(--gold);margin-right:0.35rem;font-size:0.7rem;"></i>Smart classrooms</span>
+        <span class="facility-chip"><i class="fa fa-check" style="color:var(--gold);margin-right:0.35rem;font-size:0.7rem;"></i>Computer laboratory</span>
+        <span class="facility-chip"><i class="fa fa-check" style="color:var(--gold);margin-right:0.35rem;font-size:0.7rem;"></i>Science laboratory</span>
+        <span class="facility-chip"><i class="fa fa-check" style="color:var(--gold);margin-right:0.35rem;font-size:0.7rem;"></i>Library</span>
+        <span class="facility-chip"><i class="fa fa-check" style="color:var(--gold);margin-right:0.35rem;font-size:0.7rem;"></i>Sports &amp; ECA</span>
+        {% endfor %}
+      </div>
+      <div style="margin-top:1.25rem;">
+        <a href="{{ url_for('public.about') }}" class="btn btn-outline"><i class="fa fa-building" style="font-size:0.7rem;"></i> Learn more about us</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Gallery + Notices -->
+<section class="section" style="padding-top:0;">
+  <div class="container">
+    <div class="grid-2 gallery-notices">
+      <section class="card" style="padding:1.75rem;">
+        <div class="section-head">
+          <p class="label">Gallery</p>
+          <h2>Learning Glimpses</h2>
+          <div class="gold-line"></div>
+        </div>
+        {% if gallery %}
+        <div class="gallery-grid">
+          {% for g in gallery %}
+          <a href="{{ media_url(g.image_path) }}" target="_blank" title="{{ g.title }}">
+            <img src="{{ media_url(g.image_path) }}" alt="{{ g.title or 'Gallery' }}" loading="lazy">
+          </a>
+          {% endfor %}
+        </div>
+        {% else %}
+        <p style="color:#6b7280;font-size:0.9rem;">Gallery photos will appear here. Upload them from the admin panel.</p>
+        {% endif %}
+        <div style="margin-top:1.25rem;">
+          <a href="{{ url_for('public.gallery') }}" class="btn btn-outline"><i class="fa fa-images" style="font-size:0.7rem;"></i> Explore Gallery</a>
+        </div>
+      </section>
+
+      <section class="card" style="padding:1.75rem;">
+        <div class="section-head">
+          <p class="label">Notice Board</p>
+          <h2>Latest Notices</h2>
+          <div class="gold-line"></div>
+        </div>
+        <div style="display:grid;gap:0.65rem;">
+          {% for n in notices %}
+          <a href="{{ url_for('public.notice_detail', notice_id=n.id) }}" class="notice-item">
+            <div class="meta">
+              {% if n.is_important %}<span class="badge-imp">Important</span>{% endif %}
+              <span>{{ n.published_at.strftime('%b %d, %Y') if n.published_at else '' }}</span>
+            </div>
+            <h3>{{ n.title }}</h3>
+            <p>{{ (n.content or '')[:100] }}{% if n.content and n.content|length > 100 %}...{% endif %}</p>
+          </a>
+          {% else %}
+          <p style="color:#6b7280;font-size:0.9rem;">No notices yet.</p>
+          {% endfor %}
+        </div>
+        <div style="margin-top:1.25rem;">
+          <a href="{{ url_for('public.notices') }}" class="btn btn-primary"><i class="fa fa-bullhorn" style="font-size:0.7rem;"></i> Browse Notices</a>
+        </div>
+      </section>
+    </div>
+  </div>
+</section>
+
+<!-- News + Blog -->
+<section class="section" style="padding-top:0;">
+  <div class="container">
+    <div class="grid-2 news-blog">
+      <section class="card" style="padding:1.75rem;">
+        <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:0.75rem;margin-bottom:1rem;">
+          <div class="section-head" style="margin:0;">
+            <p class="label">Discover Updates</p>
+            <h2>Latest News</h2>
+            <div class="gold-line"></div>
+          </div>
+          <a href="{{ url_for('public.news_list') }}" class="btn btn-outline" style="font-size:0.8rem;"><i class="fa fa-newspaper" style="font-size:0.7rem;"></i> View All</a>
+        </div>
+        {% if news %}
+        {% set first = news[0] %}
+        <article class="news-card">
+          {% if first.image_path %}
+          <a href="{{ url_for('public.news_detail', slug=first.slug) }}">
+            <img src="{{ media_url(first.image_path) }}" alt="{{ first.title }}">
+          </a>
+          {% endif %}
+          <div class="body">
+            <div style="display:flex;flex-wrap:wrap;gap:0.5rem;font-size:0.75rem;color:#6b7280;">
+              <span style="background:#fff;border-radius:999px;padding:0.2rem 0.65rem;font-weight:700;color:var(--navy);">{{ first.category }}</span>
+              <span>{{ first.published_at.strftime('%b %d, %Y') if first.published_at else '' }}</span>
+            </div>
+            <h3><a href="{{ url_for('public.news_detail', slug=first.slug) }}">{{ first.title }}</a></h3>
+            <p style="margin:0.5rem 0 0;font-size:0.875rem;color:#4b5563;">{{ first.excerpt }}</p>
+          </div>
+        </article>
+        <div style="margin-top:0.85rem;display:grid;gap:0.5rem;">
+          {% for item in news[1:] %}
+          <a href="{{ url_for('public.news_detail', slug=item.slug) }}" class="list-link">
+            <div style="display:flex;justify-content:space-between;font-size:0.75rem;color:#6b7280;">
+              <span>{{ item.published_at.strftime('%b %d, %Y') if item.published_at else '' }}</span>
+              <span style="background:var(--mist);border-radius:999px;padding:0.15rem 0.55rem;font-weight:700;color:var(--navy);">{{ item.category }}</span>
+            </div>
+            <h3>{{ item.title }}</h3>
+          </a>
+          {% endfor %}
+        </div>
+        {% else %}
+        <p style="color:#6b7280;">No news yet. Add from admin panel.</p>
+        {% endif %}
+      </section>
+
+      <section class="card" style="padding:1.75rem;">
+        <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:0.75rem;margin-bottom:1rem;">
+          <div class="section-head" style="margin:0;">
+            <p class="label">From the Desk</p>
+            <h2>Latest Blog Posts</h2>
+            <div class="gold-line"></div>
+          </div>
+          <a href="{{ url_for('public.blog_list') }}" class="btn btn-outline" style="font-size:0.8rem;"><i class="fa fa-feather" style="font-size:0.7rem;"></i> View All</a>
+        </div>
+        {% if blogs %}
+        {% set b0 = blogs[0] %}
+        <article class="card-navy" style="padding:1.35rem;">
+          <div style="display:flex;flex-wrap:wrap;gap:0.5rem;font-size:0.75rem;color:rgba(255,255,255,0.65);">
+            <span style="background:rgba(255,255,255,0.1);border-radius:999px;padding:0.2rem 0.65rem;font-weight:700;color:var(--gold-light);">{{ b0.category }}</span>
+            <span>{{ b0.published_at.strftime('%b %d, %Y') if b0.published_at else '' }}</span>
+          </div>
+          <h3 style="margin:0.85rem 0 0;font-family:var(--font-display);font-size:1.35rem;font-weight:600;">
+            <a href="{{ url_for('public.blog_detail', slug=b0.slug) }}" style="color:#fff;">{{ b0.title }}</a>
+          </h3>
+          <p style="margin:0.75rem 0 0;font-size:0.875rem;color:rgba(255,255,255,0.7);">{{ b0.excerpt }}</p>
+          <a href="{{ url_for('public.blog_detail', slug=b0.slug) }}" style="display:inline-flex;align-items:center;gap:0.4rem;margin-top:1rem;font-weight:700;color:var(--gold-light);">
+            Read Article <i class="fa fa-arrow-right" style="font-size:0.7rem;"></i>
+          </a>
+        </article>
+        {% for item in blogs[1:] %}
+        <a href="{{ url_for('public.blog_detail', slug=item.slug) }}" class="list-link" style="margin-top:0.65rem;background:var(--mist);">
+          <div style="display:flex;justify-content:space-between;font-size:0.75rem;color:#6b7280;">
+            <span>{{ item.published_at.strftime('%b %d, %Y') if item.published_at else '' }}</span>
+            <span style="background:#fff;border-radius:999px;padding:0.15rem 0.55rem;font-weight:700;color:var(--navy);">{{ item.category }}</span>
+          </div>
+          <h3>{{ item.title }}</h3>
+          <p style="margin:0.35rem 0 0;font-size:0.85rem;color:#4b5563;">{{ item.excerpt }}</p>
+        </a>
+        {% endfor %}
+        {% else %}
+        <p style="color:#6b7280;">No blog posts yet.</p>
+        {% endif %}
+      </section>
+    </div>
+  </div>
+</section>
+
+<!-- Visit CTA -->
+<section class="section" style="padding-top:0;padding-bottom:3.5rem;">
+  <div class="container">
+    <div class="cta-band">
+      <div style="display:grid;gap:1.5rem;{% if true %}{% endif %}">
+        <div style="display:grid;gap:1.5rem;">
+          <div>
+            <p class="label">Direct Contact</p>
+            <h2>Visit School</h2>
+            <p style="margin:0.5rem 0 0;font-size:0.9rem;color:rgba(255,255,255,0.7);">{{ settings.address or 'Urlabari-8, Morang' }}</p>
+            <div style="margin-top:1.25rem;display:flex;flex-wrap:wrap;gap:0.5rem;">
+              {% if settings and settings.phone %}
+              <a href="tel:{{ settings.phone }}" class="btn btn-cta"><i class="fa fa-phone" style="font-size:0.7rem;"></i> Call Now</a>
+              {% endif %}
+              <a href="{{ url_for('public.contact') }}" class="btn btn-ghost"><i class="fa fa-comments" style="font-size:0.7rem;"></i> Contact Us</a>
+              {% if settings and settings.latitude %}
+              <a href="https://www.google.com/maps/search/?api=1&query={{ settings.latitude }},{{ settings.longitude }}" target="_blank" rel="noopener" class="btn btn-ghost">
+                <i class="fa fa-map-location-dot" style="font-size:0.7rem;"></i> Open in Maps
+              </a>
+              {% endif %}
+            </div>
+          </div>
+          <div style="display:grid;gap:0.65rem;grid-template-columns:1fr 1fr;">
+            <div class="info-box">
+              <p class="sm">Email</p>
+              <p class="val">{{ settings.email or '—' }}</p>
+            </div>
+            <div class="info-box">
+              <p class="sm">Hours</p>
+              <p class="val" style="font-size:0.8rem;">{{ settings.school_hours or 'Sun–Fri 9AM–5PM' }}</p>
+            </div>
+            <div class="info-box" style="grid-column:1/-1;">
+              <p class="sm">Admission Session</p>
+              <p class="val">{{ settings.admission_session or '2083' }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function() {
+  const slides = document.querySelectorAll('.hero-slide');
+  const dots = document.querySelectorAll('.hero-dot');
+  if (!slides.length) return;
+  let active = 0;
+  let timer;
+  function show(i) {
+    active = (i + slides.length) % slides.length;
+    slides.forEach((s, idx) => s.classList.toggle('active', idx === active));
+    dots.forEach((d, idx) => d.classList.toggle('active', idx === active));
+  }
+  function next() { show(active + 1); }
+  function prev() { show(active - 1); }
+  function start() { timer = setInterval(next, 7000); }
+  function stop() { clearInterval(timer); }
+  dots.forEach(d => d.addEventListener('click', () => { stop(); show(+d.dataset.go); start(); }));
+  const nextBtn = document.getElementById('heroNext');
+  const prevBtn = document.getElementById('heroPrev');
+  if (nextBtn) nextBtn.addEventListener('click', () => { stop(); next(); start(); });
+  if (prevBtn) prevBtn.addEventListener('click', () => { stop(); prev(); start(); });
+  const hero = document.getElementById('hero');
+  if (hero) {
+    hero.addEventListener('mouseenter', stop);
+    hero.addEventListener('mouseleave', start);
+  }
+  start();
+})();
+</script>
+{% endblock %}

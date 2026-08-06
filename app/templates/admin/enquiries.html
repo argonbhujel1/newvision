@@ -1,0 +1,60 @@
+{% extends "admin/base.html" %}
+{% block title %}Enquiries{% endblock %}
+{% block page_title %}Admission Enquiries{% endblock %}
+{% block content %}
+<div class="admin-card">
+  <h2>Admission Enquiries</h2>
+  <p style="font-size:0.85rem;color:#6b7280;margin:0 0 1rem;">
+    If admin does not mark/read an enquiry within 24 hours, the system automatically records a personalized acknowledgement.
+  </p>
+  <div class="table-wrap">
+    <table class="admin-table">
+      <thead><tr><th>Student</th><th>Parent</th><th>Phone</th><th>Grade</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody>
+        {% for item in items %}
+        <tr>
+          <td>{{ item.student_name }}</td>
+          <td>{{ item.parent_name or '—' }}</td>
+          <td>{{ item.phone }}</td>
+          <td>{{ item.grade or '—' }}</td>
+          <td>{{ item.created_at.strftime('%Y-%m-%d %H:%M') if item.created_at else '' }}</td>
+          <td>
+            {% if item.auto_replied %}
+              <span class="badge-imp" style="background:#0ea5e9;">Auto-replied</span>
+            {% elif item.replied_at or item.is_read %}
+              <span style="color:#16a34a;font-weight:600;">Handled</span>
+            {% else %}
+              <span class="badge-imp">New</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if not item.is_read %}
+            <form method="post" action="{{ url_for('admin.enquiry_read', item_id=item.id) }}" style="display:inline;">
+              <button type="submit" class="btn btn-secondary btn-sm">Mark Read</button>
+            </form>
+            {% endif %}
+            <form method="post" action="{{ url_for('admin.enquiry_delete', item_id=item.id) }}" style="display:inline;" onsubmit="return confirm('Delete?');">
+              <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+            </form>
+          </td>
+        </tr>
+        {% if item.message %}
+        <tr><td colspan="7" style="font-size:0.85rem;color:#4b5563;background:#f9fafb;"><strong>Message:</strong> {{ item.message }}</td></tr>
+        {% endif %}
+        {% if item.reply_message %}
+        <tr>
+          <td colspan="7" style="font-size:0.85rem;color:#0369a1;background:#f0f9ff;white-space:pre-wrap;">
+            <strong>{% if item.auto_replied %}AI Auto-reply{% else %}Reply{% endif %}</strong>
+            {% if item.replied_at %} ({{ item.replied_at.strftime('%Y-%m-%d %H:%M') }}){% endif %}:
+            {{ item.reply_message }}
+          </td>
+        </tr>
+        {% endif %}
+        {% else %}
+        <tr><td colspan="7">No enquiries.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

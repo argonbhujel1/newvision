@@ -1,0 +1,24 @@
+{% extends "admin/base.html" %}
+{% block title %}{{ 'Edit' if item else 'Add' }} Blog{% endblock %}
+{% block page_title %}{{ 'Edit' if item else 'Add' }} Blog Post{% endblock %}
+{% block content %}
+<div class="admin-card">
+  <form method="post" enctype="multipart/form-data">
+    <div class="form-group"><label>Title *</label><input type="text" name="title" class="form-control" value="{{ item.title if item else '' }}" required></div>
+    <div class="form-group"><label>Slug (optional)</label><input type="text" name="slug" class="form-control" value="{{ item.slug if item else '' }}"></div>
+    <div class="form-group"><label>Excerpt</label><input type="text" name="excerpt" class="form-control" value="{{ item.excerpt if item else '' }}"></div>
+    <div class="form-group"><label>Content</label><textarea name="content" class="form-control" rows="8">{{ item.content if item else '' }}</textarea></div>
+    <div class="form-group"><label>Category</label><input type="text" name="category" class="form-control" value="{{ item.category if item else 'School Life' }}"></div>
+    <div class="form-group"><label>Published Date</label>
+      <input type="date" name="published_at" class="form-control" value="{{ item.published_at.strftime('%Y-%m-%d') if item and item.published_at else '' }}">
+    </div>
+    <div class="form-group"><label>Image</label>
+      {% if item and item.image_path %}<p><img src="{{ media_url(item.image_path) }}" style="height:80px;border-radius:8px;"></p>{% endif %}
+      <input type="file" name="image" accept="image/*,.heic,.heif,image/heic,image/heif" class="form-control">
+    </div>
+    <div class="check-row"><input type="checkbox" name="is_active" id="act" {% if not item or item.is_active %}checked{% endif %}><label for="act">Active</label></div>
+    <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Save</button>
+    <a href="{{ url_for('admin.blog') }}" class="btn btn-secondary">Cancel</a>
+  </form>
+</div>
+{% endblock %}

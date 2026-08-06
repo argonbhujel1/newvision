@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Admin{% endblock %} – New Vision Academy</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=6">
+</head>
+<body class="admin-body">
+  <div class="admin-layout">
+    <aside class="admin-sidebar" id="adminSidebar">
+      <div class="brand" style="display:flex;align-items:center;justify-content:space-between;gap:0.5rem;">
+        <span><i class="fa fa-graduation-cap" style="color:var(--gold);margin-right:0.4rem;"></i> NVA Admin</span>
+        <button type="button" class="admin-menu-close" id="adminMenuClose" aria-label="Close menu"><i class="fa fa-xmark"></i></button>
+      </div>
+      <nav class="admin-nav">
+        <a href="{{ url_for('admin.dashboard') }}" class="{% if request.endpoint == 'admin.dashboard' %}active{% endif %}"><i class="fa fa-gauge"></i> Dashboard</a>
+        <a href="{{ url_for('admin.settings') }}" class="{% if request.endpoint == 'admin.settings' %}active{% endif %}"><i class="fa fa-cog"></i> School Settings</a>
+        <a href="{{ url_for('admin.slides') }}" class="{% if request.endpoint and 'slide' in request.endpoint %}active{% endif %}"><i class="fa fa-images"></i> Hero Slides</a>
+        <a href="{{ url_for('admin.notices') }}" class="{% if request.endpoint and 'notice' in request.endpoint %}active{% endif %}"><i class="fa fa-bullhorn"></i> Notices</a>
+        <a href="{{ url_for('admin.news') }}" class="{% if request.endpoint and 'news' in request.endpoint %}active{% endif %}"><i class="fa fa-newspaper"></i> News</a>
+        <a href="{{ url_for('admin.blog') }}" class="{% if request.endpoint and 'blog' in request.endpoint %}active{% endif %}"><i class="fa fa-feather"></i> Blog</a>
+        <a href="{{ url_for('admin.gallery') }}" class="{% if request.endpoint and 'gallery' in request.endpoint %}active{% endif %}"><i class="fa fa-photo-film"></i> Gallery</a>
+        <a href="{{ url_for('admin.staff') }}" class="{% if request.endpoint and 'staff' in request.endpoint %}active{% endif %}"><i class="fa fa-chalkboard-user"></i> Staff</a>
+        <a href="{{ url_for('admin.content_list', key='commitments') }}" class="{% if request.view_args and request.view_args.get('key') == 'commitments' %}active{% endif %}"><i class="fa fa-handshake"></i> Commitments</a>
+        <a href="{{ url_for('admin.content_list', key='facilities') }}" class="{% if request.view_args and request.view_args.get('key') == 'facilities' %}active{% endif %}"><i class="fa fa-building"></i> Facilities</a>
+        <a href="{{ url_for('admin.content_list', key='offers') }}" class="{% if request.view_args and request.view_args.get('key') == 'offers' %}active{% endif %}"><i class="fa fa-star"></i> What We Offer</a>
+        <a href="{{ url_for('admin.enquiries') }}" class="{% if request.endpoint and 'enquir' in request.endpoint %}active{% endif %}"><i class="fa fa-user-graduate"></i> Admission Enquiries</a>
+        <a href="{{ url_for('admin.messages') }}" class="{% if request.endpoint and 'message' in request.endpoint %}active{% endif %}"><i class="fa fa-envelope"></i> Contact Messages</a>
+        <a href="{{ url_for('admin.notifications') }}" class="{% if request.endpoint == 'admin.notifications' %}active{% endif %}"><i class="fa fa-bell"></i> Push Notifications</a>
+        <a href="{{ url_for('admin.password') }}" class="{% if request.endpoint == 'admin.password' %}active{% endif %}"><i class="fa fa-key"></i> Change Password</a>
+        <a href="{{ url_for('public.home') }}" target="_blank"><i class="fa fa-external-link"></i> View Website</a>
+        <a href="{{ url_for('admin.logout') }}"><i class="fa fa-sign-out-alt"></i> Logout</a>
+      </nav>
+    </aside>
+    <div class="admin-main">
+      <div class="admin-top">
+        <div style="display:flex;align-items:center;gap:0.75rem;min-width:0;">
+          <button type="button" class="admin-menu-btn" id="adminMenuBtn" aria-label="Open menu">
+            <i class="fa fa-bars"></i>
+          </button>
+          <strong style="color:var(--navy);font-size:clamp(0.95rem,3vw,1.05rem);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{% block page_title %}Dashboard{% endblock %}</strong>
+        </div>
+        <span style="font-size:0.85rem;color:#6b7280;flex-shrink:0;">{{ current_user.username }}</span>
+      </div>
+      <div class="admin-content">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for cat, msg in messages %}
+        <div class="flash flash-{{ cat }}">{{ msg }}</div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+      </div>
+    </div>
+  </div>
+  <div class="admin-overlay" id="adminOverlay"></div>
+  <script>
+    (function () {
+      var btn = document.getElementById('adminMenuBtn');
+      var closeBtn = document.getElementById('adminMenuClose');
+      var sidebar = document.getElementById('adminSidebar');
+      var overlay = document.getElementById('adminOverlay');
+      function open() {
+        if (sidebar) sidebar.classList.add('mobile-open');
+        if (overlay) overlay.classList.add('show');
+        document.body.style.overflow = 'hidden';
+      }
+      function close() {
+        if (sidebar) sidebar.classList.remove('mobile-open');
+        if (overlay) overlay.classList.remove('show');
+        document.body.style.overflow = '';
+      }
+      if (btn) btn.addEventListener('click', open);
+      if (closeBtn) closeBtn.addEventListener('click', close);
+      if (overlay) overlay.addEventListener('click', close);
+      // Close drawer after navigating on mobile
+      if (sidebar) {
+        sidebar.querySelectorAll('a').forEach(function (a) {
+          a.addEventListener('click', function () {
+            if (window.innerWidth <= 768) close();
+          });
+        });
+      }
+    })();
+  </script>
+</body>
+</html>

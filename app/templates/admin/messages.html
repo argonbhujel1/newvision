@@ -1,0 +1,37 @@
+{% extends "admin/base.html" %}
+{% block title %}Messages{% endblock %}
+{% block page_title %}Contact Messages{% endblock %}
+{% block content %}
+<div class="admin-card">
+  <h2>Contact Messages</h2>
+  <div class="table-wrap">
+    <table class="admin-table">
+      <thead><tr><th>Name</th><th>Email / Phone</th><th>Subject</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody>
+        {% for item in items %}
+        <tr>
+          <td>{{ item.name }}</td>
+          <td>{{ item.email or '' }} {{ item.phone or '' }}</td>
+          <td>{{ item.subject or '—' }}</td>
+          <td>{{ item.created_at.strftime('%Y-%m-%d %H:%M') if item.created_at else '' }}</td>
+          <td>{% if item.is_read %}Read{% else %}<span class="badge-imp">New</span>{% endif %}</td>
+          <td>
+            {% if not item.is_read %}
+            <form method="post" action="{{ url_for('admin.message_read', item_id=item.id) }}" style="display:inline;">
+              <button type="submit" class="btn btn-secondary btn-sm">Mark Read</button>
+            </form>
+            {% endif %}
+            <form method="post" action="{{ url_for('admin.message_delete', item_id=item.id) }}" style="display:inline;" onsubmit="return confirm('Delete?');">
+              <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+            </form>
+          </td>
+        </tr>
+        <tr><td colspan="6" style="font-size:0.85rem;color:#4b5563;background:#f9fafb;">{{ item.message }}</td></tr>
+        {% else %}
+        <tr><td colspan="6">No messages.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

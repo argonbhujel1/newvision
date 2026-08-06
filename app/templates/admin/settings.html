@@ -1,0 +1,82 @@
+{% extends "admin/base.html" %}
+{% block title %}Settings{% endblock %}
+{% block page_title %}School Settings{% endblock %}
+{% block content %}
+<div class="admin-card">
+  <form method="post" enctype="multipart/form-data">
+    <h2>Basic Info</h2>
+    <div style="display:grid;gap:0.75rem;grid-template-columns:1fr 1fr;">
+      <div class="form-group"><label>School Name</label><input type="text" name="school_name" class="form-control" value="{{ s.school_name or '' }}"></div>
+      <div class="form-group"><label>Tagline</label><input type="text" name="tagline" class="form-control" value="{{ s.tagline or '' }}"></div>
+      <div class="form-group"><label>School Type</label><input type="text" name="school_type" class="form-control" value="{{ s.school_type or '' }}"></div>
+      <div class="form-group"><label>Grades Offered</label><input type="text" name="grades_offered" class="form-control" value="{{ s.grades_offered or '' }}"></div>
+      <div class="form-group"><label>Established</label><input type="text" name="established" class="form-control" value="{{ s.established or '' }}"></div>
+      <div class="form-group"><label>Admission Session</label><input type="text" name="admission_session" class="form-control" value="{{ s.admission_session or '' }}"></div>
+      <div class="form-group"><label>Student Count</label><input type="text" name="student_count" class="form-control" value="{{ s.student_count or '' }}"></div>
+      <div class="form-group"><label>School Hours</label><input type="text" name="school_hours" class="form-control" value="{{ s.school_hours or '' }}"></div>
+    </div>
+
+    <h2 style="margin-top:1.5rem;">Contact</h2>
+    <div style="display:grid;gap:0.75rem;grid-template-columns:1fr 1fr;">
+      <div class="form-group"><label>Phone</label><input type="text" name="phone" class="form-control" value="{{ s.phone or '' }}"></div>
+      <div class="form-group"><label>Phone 2</label><input type="text" name="phone2" class="form-control" value="{{ s.phone2 or '' }}"></div>
+      <div class="form-group"><label>Phone 3</label><input type="text" name="phone3" class="form-control" value="{{ s.phone3 or '' }}"></div>
+      <div class="form-group"><label>Email</label><input type="email" name="email" class="form-control" value="{{ s.email or '' }}"></div>
+      <div class="form-group" style="grid-column:1/-1;"><label>Address</label><input type="text" name="address" class="form-control" value="{{ s.address or '' }}"></div>
+      <div class="form-group" style="grid-column:1/-1;"><label>Google Maps Address</label><input type="text" name="google_maps_address" class="form-control" value="{{ s.google_maps_address or '' }}"></div>
+      <div class="form-group"><label>Latitude</label><input type="text" name="latitude" class="form-control" value="{{ s.latitude or '' }}"></div>
+      <div class="form-group"><label>Longitude</label><input type="text" name="longitude" class="form-control" value="{{ s.longitude or '' }}"></div>
+      <div class="form-group"><label>District</label><input type="text" name="district" class="form-control" value="{{ s.district or '' }}"></div>
+      <div class="form-group"><label>Municipality</label><input type="text" name="municipality" class="form-control" value="{{ s.municipality or '' }}"></div>
+      <div class="form-group"><label>Ward</label><input type="text" name="ward" class="form-control" value="{{ s.ward or '' }}"></div>
+      <div class="form-group"><label>Province</label><input type="text" name="province" class="form-control" value="{{ s.province or '' }}"></div>
+      <div class="form-group"><label>Registration No.</label><input type="text" name="registration_no" class="form-control" value="{{ s.registration_no or '' }}"></div>
+      <div class="form-group"><label>PAN</label><input type="text" name="pan" class="form-control" value="{{ s.pan or '' }}"></div>
+      <div class="form-group"><label>Facebook URL</label><input type="url" name="facebook_url" class="form-control" value="{{ s.facebook_url or '' }}"></div>
+      <div class="form-group"><label>WhatsApp number (digits only, with country code)</label><input type="text" name="whatsapp" class="form-control" value="{{ s.whatsapp or '' }}" placeholder="9779841333476"></div>
+    </div>
+
+    <h2 style="margin-top:1.5rem;">Principal</h2>
+    <div style="display:grid;gap:0.75rem;grid-template-columns:1fr 1fr;">
+      <div class="form-group"><label>Principal Name</label><input type="text" name="principal_name" class="form-control" value="{{ s.principal_name or '' }}"></div>
+      <div class="form-group"><label>Title</label><input type="text" name="principal_title" class="form-control" value="{{ s.principal_title or '' }}"></div>
+      <div class="form-group" style="grid-column:1/-1;"><label>Principal Message</label><textarea name="principal_message" class="form-control" rows="5">{{ s.principal_message or '' }}</textarea></div>
+      <div class="form-group">
+        <label><i class="fa fa-user" style="color:var(--gold);"></i> Principal Photo</label>
+        {% if s.principal_photo %}
+        <div style="margin:0.4rem 0 0.6rem;display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">
+          <img src="{{ media_url(s.principal_photo) }}" alt="Principal" style="height:72px;width:72px;object-fit:cover;border-radius:12px;border:1px solid #e5e7eb;">
+          <label style="font-size:0.8rem;font-weight:600;display:flex;align-items:center;gap:0.35rem;cursor:pointer;">
+            <input type="checkbox" name="remove_principal_photo" value="1"> Remove photo
+          </label>
+        </div>
+        {% endif %}
+        <input type="file" name="principal_photo" accept="image/*,.heic,.heif,image/heic,image/heif" class="form-control">
+        <small style="color:#6b7280;font-size:0.75rem;">JPG, PNG, WebP · square photo looks best</small>
+      </div>
+      <div class="form-group">
+        <label><i class="fa fa-image" style="color:var(--gold);"></i> School Logo (header)</label>
+        {% if s.logo_path %}
+        <div style="margin:0.4rem 0 0.6rem;display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">
+          <img src="{{ media_url(s.logo_path) }}" alt="Logo" style="height:72px;width:72px;object-fit:cover;border-radius:12px;border:1px solid #e5e7eb;background:#f5f1e8;">
+          <label style="font-size:0.8rem;font-weight:600;display:flex;align-items:center;gap:0.35rem;cursor:pointer;">
+            <input type="checkbox" name="remove_logo" value="1"> Remove logo
+          </label>
+        </div>
+        {% else %}
+        <p style="font-size:0.8rem;color:#6b7280;margin:0.25rem 0 0.5rem;">No logo yet — upload one to show in the website header.</p>
+        {% endif %}
+        <input type="file" name="logo" accept="image/*,.heic,.heif,image/heic,image/heif" class="form-control">
+        <small style="color:#6b7280;font-size:0.75rem;">Shown next to school name on every page · JPG / PNG / WebP (square recommended)</small>
+      </div>
+    </div>
+
+    <h2 style="margin-top:1.5rem;">About & SEO</h2>
+    <div class="form-group"><label>About Text</label><textarea name="about_text" class="form-control" rows="5">{{ s.about_text or '' }}</textarea></div>
+    <div class="form-group"><label>Meta Description</label><input type="text" name="meta_description" class="form-control" value="{{ s.meta_description or '' }}"></div>
+
+    <p style="font-size:0.8rem;color:#6b7280;margin:0.75rem 0 0;">Tip: Prefer <strong>JPG / PNG / WebP</strong>. iPhone photos are usually fine (Safari often sends JPEG). HEIC is supported when available.</p>
+    <button type="submit" class="btn btn-primary" style="margin-top:1rem;"><i class="fa fa-save"></i> Save Settings</button>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends "admin/base.html" %}
+{% block title %}{{ 'Edit' if item else 'Add' }} Notice{% endblock %}
+{% block page_title %}{{ 'Edit' if item else 'Add' }} Notice{% endblock %}
+{% block content %}
+<div class="admin-card">
+  <form method="post">
+    <div class="form-group"><label>Title *</label><input type="text" name="title" class="form-control" value="{{ item.title if item else '' }}" required></div>
+    <div class="form-group"><label>Content</label><textarea name="content" class="form-control" rows="6">{{ item.content if item else '' }}</textarea></div>
+    <div class="form-group"><label>Published Date</label>
+      <input type="date" name="published_at" class="form-control" value="{{ item.published_at.strftime('%Y-%m-%d') if item and item.published_at else '' }}">
+    </div>
+    <div class="check-row"><input type="checkbox" name="is_important" id="imp" {% if item and item.is_important %}checked{% endif %}><label for="imp">Important</label></div>
+    <div class="check-row"><input type="checkbox" name="is_active" id="act" {% if not item or item.is_active %}checked{% endif %}><label for="act">Active</label></div>
+    <div class="check-row"><input type="checkbox" name="send_notify" id="notify"><label for="notify">📱 Send phone notification to all subscribers</label></div>
+    <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Save</button>
+    <a href="{{ url_for('admin.notices') }}" class="btn btn-secondary">Cancel</a>
+  </form>
+</div>
+{% endblock %}
